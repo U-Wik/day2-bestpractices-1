@@ -1,10 +1,10 @@
 # Just count the stupid dice
 import random
 
-def roll(dice):
-    for die in dice:
-        # XXX: I don't even know what this function does
-        continue
+##def roll(dice):                                               removed it altogether
+##    for die in dice:
+##        # XXX: I don't even know what this function does
+##        continue
 
 class Die:
     """
@@ -32,5 +32,5 @@ class Die:
             return("---------\n|*     *|\n|*     *|\n|*     *|\n---------")
 
     @classmethod
-    def create_dice(cls, n):
-        return [cls() for _ in range(n)]
+    def create_dice(self, n):                           #replaced cls for self on two lines
+        return [self() for _ in range(n)]

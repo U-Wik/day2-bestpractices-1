@@ -4,7 +4,7 @@ from .utils import i_just_throw_an_exception
 class GameRunner:
 
     def __init__(self):
-        self.dice = Die.create_dice(5)
+        
         self.reset()
 
     def reset(self):
@@ -15,46 +15,56 @@ class GameRunner:
     def answer(self):
         total = 0
         for die in self.dice:
-            total += 1
+            total = total + die.value                           # not increment but added value
         return total
 
     @classmethod
-    def run(cls):
-        # Probably counts wins or something.
-        # Great variable name, 10/10.
-        c = 0
-        while True:
-            runner = cls()
+    def run(self):                                              # not a bug as such but I change cls to self
+                                                                # don't like "probably" i remove it
+        runner = self()                                         # moved it here, from inside the loop, should be done once
+        guessCount = 0                                          # variable namne changed from c to guessCount
+        while True: 
+            self.dice = Die.create_dice(5)                      # moved it here from __init__ to run it every turn
 
-            print("Round {}\n".format(runner.round))
+            print("\nRound {}\n".format(runner.round))           # added line
 
             for die in runner.dice:
                 print(die.show())
 
-            guess = input("Sigh. What is your guess?: ")
-            guess = int(guess)
+            guess = ''                                          # rewrote some lines to catch errors
+            while type(guess) != int:
+                guess = input("Sigh. What is your guess?: ")
+                try:
+                    guess = int(guess)
+                except ValueError:
+                    print('Not a numer. Try again!')
+ 
 
             if guess == runner.answer():
                 print("Congrats, you can add like a 5 year old...")
                 runner.wins += 1
-                c += 1
+                guessCount += 1
             else:
                 print("Sorry that's wrong")
                 print("The answer is: {}".format(runner.answer()))
                 print("Like seriously, how could you mess that up")
                 runner.loses += 1
-                c = 0
+                guessCount += 1                                             # (c or ) guessCount should be incremented
             print("Wins: {} Loses {}".format(runner.wins, runner.loses))
             runner.round += 1
+            
+            if guessCount == 6:
+                print()                                                         # added line
+                if runner.wins > runner.loses: print("You won... Congrats...")  # conditional ending
+                else: print("You did not win....")                                # conditional ending
+                
+                print()                                                         # added line    
+                prompt = input("Would you like to play again?[y/n]: ")          # now asking after all rounds
 
-            if c == 6:
-                print("You won... Congrats...")
-                print("The fact it took you so long is pretty sad")
-                break
-
-            prompt = input("Would you like to play again?[Y/n]: ")
-
-            if prompt == 'y' or prompt == '':
-                continue
-            else:
-                i_just_throw_an_exception()
+                if prompt == 'y' or prompt == 'Y':                       # replaced "" with "Y"
+                    print()
+                    runner.reset()                                          # resetting
+                    guessCount = 0                                          # resetting
+                    continue
+                else:
+                    break                             # strange ending changed to break
